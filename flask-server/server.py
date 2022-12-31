@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from pymongo import MongoClient
 from flask_pymongo import ObjectId
 from flask_cors import CORS
@@ -39,9 +39,9 @@ def lista_arquivos():
     return jsonify(arquivos)
 
 
-@app.route("/arquivo/<nome_do_aquivo>" methods=["GET"])
+@app.route("/arquivo/<nome_do_arquivo>", methods=["GET"])
 def get_arquivo(nome_do_arquivo):
-    return send_from_directory('./imagens/' + nome_do_arquivo)
+    return send_from_directory('./imagens/', nome_do_arquivo, as_attachment=False)
 
 
 # PRODUTOS #######################
