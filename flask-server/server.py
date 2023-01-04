@@ -6,7 +6,8 @@ from produtos import *
 import json
 import os
 from bson.json_util import dumps
-
+from random import random 
+from pathlib import Path
 
 app = Flask(__name__)
 URI = "mongodb+srv://duzis:duzis@cluster0.fwzx7jb.mongodb.net/?retryWrites=true&w=majority"
@@ -14,8 +15,41 @@ mongo = MongoClient(URI)
 collectionProdutos = mongo.testando.produtos
 collectionUsers = mongo.testando.users
 
-# ARQUIVOS #######################
+# SLIDES #######################
 
+@app.route('/lista_slides', methods=['GET'])
+def lista_slides():
+    slides = []
+    for nome_do_arquivo in os.listdir('slides'):
+        endereco_do_arquivo = os.path.join('./slides/' + nome_do_arquivo)
+        if (os.path.isfile(endereco_do_arquivo)):
+            slides.append(nome_do_arquivo)
+    return jsonify(slides)
+
+@app.route('/manda_slides', methods=['POST'])
+def manda_slides():
+    print(request.files)
+    slide = request.files.get('slide')
+    upload_name =  slide.filename
+    slide.save(os.path.join('./slides/'+ upload_name))
+    return "Imagem de slide enviada com sucesso"
+
+
+@app.route('/slide/<nome_do_slide>', methods=[ 'GET'])
+def pega_slide(nome_do_slide):
+    return send_from_directory("./slides/" + nome_do_slide, as_attachment=False)
+
+
+@app.route('/slide/<nome_do_slide>', methods=['DELETE'])
+def deleta_slide(nome_do_slide):    
+    slide = os.path.join('./slides/' + nome_do_slide)
+    if slide:
+        os.remove(slide)
+        return "Deletado com sucesso!"
+    else: 
+        return "Item não encontrado, não existe slide com esse nome.", 404
+
+# ARQUIVOS #######################
 
 @app.route('/arquivo', methods=['POST'])
 def mandaArquivo():
