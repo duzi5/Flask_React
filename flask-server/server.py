@@ -37,7 +37,7 @@ def manda_slides():
 
 @app.route('/slide/<nome_do_slide>', methods=[ 'GET'])
 def pega_slide(nome_do_slide):
-    return send_from_directory("./slides/" + nome_do_slide, as_attachment=False)
+    return send_from_directory("./slides/", nome_do_slide, as_attachment=False)
 
 
 @app.route('/slide/<nome_do_slide>', methods=['DELETE'])
